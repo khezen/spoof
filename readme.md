@@ -18,8 +18,10 @@ A lightweight Dockerized SMTP server built with Postfix on Alpine Linux, designe
 ```
 dmarc/
 ├── Dockerfile         # Builds the Alpine-based Postfix and Go environment
-├── postfix_main.cf    # Postfix main configuration
-├── postfix_master.cf  # Postfix service definitions (port 2525 and postlog)
+├── etc/
+│   └── postfix/
+│       ├── main.cf    # Postfix main configuration
+│       └── master.cf  # Postfix service definitions (port 2525 and postlog)
 ├── cmd/
 │   └── spoof/
 │       └── main.go    # Go script to send test emails
@@ -38,7 +40,7 @@ cd dmarc
 Otherwise, create the `dmarc/` directory and copy the files as shown above.
 
 ### 2. Customize Configuration (Optional)
-- **Edit `postfix_main.cf`:**
+- **Edit `etc/postfix/main.cf`:**
   - Replace `yourdomain.com` with your domain for realistic spoofing.
   - Adjust `mynetworks` for security if not testing locally (e.g., `127.0.0.0/8`).
 - **Edit `cmd/spoof/main.go`:**
@@ -80,27 +82,21 @@ Expect to see:
    ```
 3. Verify the email arrives and check your DMARC reports (e.g., via `rua` in your DMARC DNS record).
 
+
 ## Troubleshooting
-- **"Postfix integrity check failed"**: Ensure `postfix_master.cf` includes the `postlog` service.
+- **"Postfix integrity check failed"**: Ensure `etc/postfix/master.cf` includes the `postlog` service.
 - **Email not sending**: Check logs for errors (e.g., network issues, Postfix not running).
 - **Port inaccessible**: Verify port 2525 is open on your host (`sudo ufw allow 2525` or equivalent).
 
 ## Notes
 - **Security**: This is an open relay (`mynetworks = 0.0.0.0/0`) for testing. Restrict access in production.
-- **TLS**: Not enabled. Add certificates and update `postfix_main.cf` for secure connections if needed.
-- **Port**: Uses 2525 to avoid privileged port issues. Change in `postfix_master.cf` and Docker `-p` if desired.
+- **TLS**: Not enabled. Add certificates and update `etc/postfix/main.cf` for secure connections if needed.
+- **Port**: Uses 2525 to avoid privileged port issues. Change in `etc/postfix/master.cf` and Docker `-p` if desired.
 
 ## Extending the Project
-- Add TLS: Install `openssl`, generate certs, and configure `smtpd_tls_*` in `postfix_main.cf`.
+- Add TLS: Install `openssl`, generate certs, and configure `smtpd_tls_*` in `etc/postfix/main.cf`.
 - External Relay: Adjust `mydestination` and `relayhost` for real-world email delivery.
 - Loop Testing: Modify `entrypoint.sh` to run `main.go` in a loop.
 
 ## License
 This project is unlicensed—use it freely for testing purposes.
-
----
-
-### Adjustments to Match Your Structure
-- **File Names**: Updated to `postfix_main.cf` and `postfix_master.cf` instead of `main.cf` and `master.cf`.
-- **Go Script Path**: Reflects `cmd/spoof/main.go` instead of a flat `smtp.go`.
-- **Image/Container Names**: Changed to `dmarc-tester` and `dmarc-server` for consistency with the project name.

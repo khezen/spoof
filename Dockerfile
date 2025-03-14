@@ -9,12 +9,12 @@ RUN apk add --no-cache \
     && chown postfix:postfix /var/spool/postfix/public \
     && chmod 755 /var/spool/postfix/public
 
-# Copy Postfix configuration
-COPY postfix_main.cf /etc/postfix/main.cf
-COPY postfix_master.cf /etc/postfix/master.cf
+# Copy Postfix configuration files from etc/postfix/
+COPY etc/postfix/main.cf /etc/postfix/main.cf
+COPY etc/postfix/master.cf /etc/postfix/master.cf
 
 # Copy the Go script
-COPY cmd/spoof/main.go /app/spoof.go
+COPY cmd/spoof/main.go /app/cmd/spoof/main.go
 
 # Copy the entrypoint script
 COPY entrypoint.sh /app/entrypoint.sh
@@ -23,7 +23,7 @@ RUN chmod +x /app/entrypoint.sh
 # Set working directory
 WORKDIR /app
 
-# Expose the high port for SMTP(2525)
+# Expose the high port (2525)
 EXPOSE 2525
 
 # Use the entrypoint script to start Postfix and run the Go script
