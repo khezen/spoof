@@ -1,0 +1,5 @@
+# Custom SMTP service on port 2525
+2525      inet  n       -       n       -       -       smtpd
+
+# Required postlog service for logging (added to fix the error)
+postlog   unix-dgram n  -       n       -       1      postlogd
