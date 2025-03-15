@@ -5,5 +5,7 @@
 
 # Run the Go script
 go run cmd/spoof/main.go
-
+sleep 10
 /usr/sbin/postfix stop
+
+cat /var/log/mail.log

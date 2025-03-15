@@ -33,9 +33,9 @@ func waitForPostfix(addr string, timeout time.Duration) error {
 func main() {
 	var (
 		// Configuration
-		from       = "test@yourdomain.com" // Spoofed sender
-		to         = "user@localhost"      // Recipient
-		smtpServer = "localhost"           // Docker host
+		from       = "test@mydomain.com"          // Spoofed sender
+		to         = "receiver@anotherdomain.com" // Recipient
+		smtpServer = "localhost"                  // Docker host
 		smtpPort   = "2525"
 		subject    = "SMTP Server Test"
 		body       = "This is a test email from my custom SMTP server."

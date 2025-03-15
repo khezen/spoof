@@ -1,10 +1,19 @@
 # Basic settings
 myhostname = localhost
-mydomain = yourdomain.com
+mydomain = mydomain.com
 myorigin = /etc/mailname
 inet_interfaces = all
 mydestination = $myhostname, localhost.$mydomain, localhost
 mynetworks = 127.0.0.0/8 [::1]/128
+compatibility_level = 3.6
+
+# Relay configuration
+# relayhost = [smtp.gmail.com]:587
+# smtp_sasl_auth_enable = yes
+# smtp_sasl_password_maps = texthash:/etc/postfix/sasl_passwd
+# smtp_sasl_security_options = noanonymous
+# smtp_tls_security_level = encrypt
+# smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 
 # Logging
 maillog_file = /var/log/mail.log
@@ -12,3 +21,11 @@ maillog_file = /var/log/mail.log
 # Minimal restrictions for testing
 smtpd_banner = $myhostname ESMTP
 smtpd_recipient_restrictions = permit_mynetworks
+
+# Disable proxy and lookup services
+proxy_interfaces =
+alias_maps =
+alias_database =
+virtual_alias_maps =
+virtual_mailbox_maps =
+local_recipient_maps =

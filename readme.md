@@ -20,8 +20,9 @@ dmarc/
 ├── Dockerfile         # Builds the Alpine-based Postfix and Go environment
 ├── etc/
 │   └── postfix/
-│       ├── main.cf    # Postfix main configuration
-│       └── master.cf  # Postfix service definitions (port 2525 and postlog)
+│       ├── main.cf     # Postfix main configuration
+│       └── master.cf   # Postfix service definitions (port 2525 and postlog)
+|       └── sasl_passwd # Authentication to remote email service when relay is enabled
 ├── cmd/
 │   └── spoof/
 │       └── main.go    # Go script to send test emails
@@ -73,6 +74,7 @@ Expect to see:
 
 ### Testing DMARC
 1. Update `cmd/spoof/main.go`:
+   - Set `from` to an email address belonging the to domain for which you want to test your DMARC policy.
    - Set `to` to an external email address (e.g., your inbox).
    - Set `smtpServer` to your host’s IP if running on a remote machine.
 2. Rebuild and rerun the container:
@@ -95,8 +97,13 @@ Expect to see:
 
 ## Extending the Project
 - Add TLS: Install `openssl`, generate certs, and configure `smtpd_tls_*` in `etc/postfix/main.cf`.
-- External Relay: Adjust `mydestination` and `relayhost` for real-world email delivery.
-- Loop Testing: Modify `entrypoint.sh` to run `main.go` in a loop.
+- External Relay: Adjust relay configuration in `etc/postfix/main.cf` for real-world email delivery.
+  - in this case you also need to update `etc/postfix/sasl_passwd`. 
+  - Exemple for gmail:
+    - Go to https://myaccount.google.com/apppasswords.
+    - Sign in with your account.
+    - Copy the 16-character password (e.g., abcd efgh ijkl mnop) and replace your-app-password with it (remove spaces).
+    - Example: [smtp.gmail.com]:587 your-address@gmail.com:abcdefghijklmnop
 
 ## License
 This project is unlicensed—use it freely for testing purposes.
