@@ -35,10 +35,9 @@ dmarc/
 ### 1. Clone or Create the Project
 If this is part of a repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/khezen/dmarc
 cd dmarc
 ```
-Otherwise, create the `dmarc/` directory and copy the files as shown above.
 
 ### 2. Customize Configuration (Optional)
 - **Edit `etc/postfix/main.cf`:**
