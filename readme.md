@@ -1,22 +1,22 @@
-# DMARC Tester
+# Spoof
 
-A lightweight Dockerized SMTP server built with Postfix on Alpine Linux, designed for testing DMARC configurations. This project includes a Go script (`cmd/spoof/main.go`) to send spoofed emails, allowing you to verify how your DMARC policies handle unauthenticated senders. The SMTP server runs on a high port (2525) to avoid requiring root privileges.
+A lightweight Dockerized SMTP server built with Postfix on Alpine Linux, designed for testing SPF/DKIM/DMARC configurations. This project includes a Go script (`cmd/spoof/main.go`) to send spoofed emails, allowing you to verify how your DMARC policies handle unauthenticated senders. The SMTP server runs on a high port (2525) to avoid requiring root privileges.
 
 ## Features
 - Runs Postfix SMTP server in a Docker container on port 2525.
 - Includes a Go script (`cmd/spoof/main.go`) to send test emails with spoofed headers.
-- Configurable for local or external DMARC testing.
+- Configurable for local or external testing.
 - Lightweight Alpine Linux base image (~20MB).
 - Logs to `/var/log/mail.log` for debugging.
 
 ## Prerequisites
 - [Docker](https://docs.docker.com/get-docker/) installed on your system.
 - [Go](https://golang.org/doc/install) (optional, only if testing the script outside the container).
-- A domain with DMARC configured (optional, for real-world testing).
+- A domain with SPF, DKIM and DMARC configured (optional, for real-world testing).
 
 ## Project Structure
 ```
-dmarc/
+spoof/
 ├── Dockerfile         # Builds the Alpine-based Postfix and Go environment
 ├── etc/
 │   └── postfix/
@@ -35,8 +35,8 @@ dmarc/
 ### 1. Clone or Create the Project
 If this is part of a repository:
 ```bash
-git clone https://github.com/khezen/dmarc
-cd dmarc
+git clone https://github.com/khezen/spoof
+cd spoof
 ```
 
 ### 2. Customize Configuration (Optional)
@@ -49,19 +49,19 @@ cd dmarc
 
 ### 3. Build the Docker Image
 ```bash
-docker build -t dmarc-tester .
+docker build -t spoof .
 ```
 
 ### 4. Run the Container
 ```bash
-docker run -d -p 2525:2525 --name dmarc-server dmarc-tester
+docker run -d -p 2525:2525 --name spoof-server spoof
 ```
 - `-p 2525:2525`: Maps port 2525 on your host to the container.
 - The container starts Postfix, sends a test email via `cmd/spoof/main.go`, and tails the log.
 
 ### 5. Check Logs
 ```bash
-docker logs dmarc-server
+docker logs spoof-server
 ```
 Expect to see:
 - Postfix startup messages.
@@ -71,15 +71,15 @@ Expect to see:
 ## Usage
 
 
-### Testing DMARC
+### Testing SPF/DKIM/DMARC
 1. Update `cmd/spoof/main.go`:
-   - Set `from` to an email address belonging the to domain for which you want to test your DMARC policy.
+   - Set `from` to an email address belonging the to domain for which you want to test your SPF/DKIM/DMARC configurations.
    - Set `to` to an external email address (e.g., your inbox).
    - Set `smtpServer` to your host’s IP if running on a remote machine.
 2. Rebuild and rerun the container:
    ```bash
-   docker build -t dmarc-tester .
-   docker run -d -p 2525:2525 --name dmarc-server dmarc-tester
+   docker build -t spoof .
+   docker run -d -p 2525:2525 --name spoof-server spoof
    ```
 3. Verify the email arrives and check your DMARC reports (e.g., via `rua` in your DMARC DNS record).
 
